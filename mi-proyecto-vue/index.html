@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visualizar XML con Vue.js</title>
+</head>
+<body>
+
+<div id="app">
+  <h1>Contenido del archivo XML:</h1>
+
+  <ul>
+    <li v-for="(value, key) in xmlData" :key="key">
+      <strong>{{ key }}</strong>: {{ value }}
+    </li>
+  </ul>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    xmlData: {} // Aquí se cargarán los datos del XML
+  },
+  mounted() {
+    fetch('datos.xml') // Ruta al archivo XML
+      .then(response => response.text())
+      .then(data => {
+        let parser = new DOMParser();
+        let xmlDoc = parser.parseFromString(data, 'text/xml');
+
+        let xmlObj = {};
+        Array.from(xmlDoc.documentElement.children).forEach(child => {
+          xmlObj[child.tagName] = child.innerHTML;
+        });
+
+        this.xmlData = xmlObj;
+      });
+  }
+});
+</script>
+
+</body>
+</html>
